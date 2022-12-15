@@ -1,0 +1,20 @@
+opção ver status	--> (X)
+mostrar hps nas lutas	--> (X)
+variar golpes inimigos  --> (X)
+dar opções nas lutas	--> (X)
+opçaõ sair do médico	--> (X)
+
+bug médico ao selecionar pokemon 0 --> (x)
+>> inimigos estão sem novas magias --> (X)
+
+inserir atributos(tipos)--> (X)
+
+sistema de magias	--> (X) {
+
+	XXcriar funções especial 1,2,3,4,5,6,7,8,9,10
+	função aprender especiais	(x)	
+	usar magias			(X)
+}
+
+balancear capturas 	--> ( )
+sistema de itens	--> ( )
