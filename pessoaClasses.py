@@ -1,5 +1,6 @@
 import random
 from pokemonClasses import *
+from itensClasses import *
 
 
 NOMES = ['Alan', 'Alex' ,'Bruno', 'Bruna', 'Chris', 'Carmen','Carmelo','Crudemiro',
@@ -25,6 +26,10 @@ POKEMONS = [PokemonAgua('Squirtle'),
     PokemonEletrico('Electricke'),
     PokemonEletrico('Pichu'),
     PokemonPlanta('Plantoyde'),
+    PokemonPlanta('Snivy'),
+    PokemonPlanta('Treecko'),
+    PokemonPlanta('Turtwig'),
+    PokemonPlanta('Bulbasaur'),
     PokemonPedra('Geodude'),
     PokemonPedra('Golem'),
     PokemonPedra('Onyx'),
@@ -37,18 +42,32 @@ POKEMONS = [PokemonAgua('Squirtle'),
 class Pessoa:
 
     
-    def __init__(self, nome=None, pokemons=[]):
+    def __init__(self, nome=None, pokemons=[], itens=[], level=1):
         if nome:
             self.nome = nome
         else:
             self.nome = random.choice(NOMES)
 
         self.pokemons = pokemons
+        self.itens = itens
+        self.level = level
+        self.xp = 0
 
     def __str__(self):
         return self.nome
 
+    def proximoLevelTreinador(self, xp):
+        self.xp += xp;
+        proximolevel = self.level * 6 * self.level
+        if self.xp >= proximolevel:
+            self.level += 1
+            print("Treinador {} subiu para o level {}!!".format(self, self.level))
+            return True
+        else:
+            return False
+
     def mostrarPokemons(self):
+        print("{} Treinador(a) level: {}".format(self, self.level))
         if self.pokemons:
             print("---------------------------------------")
             for indice, pokemon in enumerate(self.pokemons):
@@ -124,7 +143,13 @@ class Pessoa:
                     print("Ação inválida, você perdeu o turno!")
                     vitoria = False
             elif acao == '3':
-                #item!
+                #Não existe item de ataque!
+                vitoria = False
+                if len(self.itens) == 0:
+                    print("Você não possui nenhum item!")
+                    pass
+                else:
+                    self.item_batalha(pokemon)
                 pass
             else:
                 print("Acão inválida, você perdeu este turno!")
@@ -133,6 +158,7 @@ class Pessoa:
             if vitoria:
                 print("{} venceu a batalha!".format(pokemon))
                 xp = int(pokemon_inimigo.level * 2.3)
+                self.proximoLevelTreinador(xp)
                 levelup = pokemon.proximoLevel(xp)
                 if levelup:
                     pokemon.aprenderMagia()
@@ -232,19 +258,81 @@ class Player(Pessoa):
         print("Explorando a floresta!")
 
         if(random.random() < 0.3):
-            pokemon = random.choice(POKEMONS)
-            print("Um {} selvagem apareceu!!".format(pokemon))
-            escolha = input("Deseja tentar capturálo (s/n)? ")
-            if escolha == "n":
-                print("Ok, passando...")
-                return 0
-            if escolha == "s":
-                if random.random() < 0.3:
-                    self.capturar(pokemon)
+            encontro = random.choice([0,1])
+            if encontro == 0:
+                pokemon = random.choice(POKEMONS)
+                print("Um {} selvagem apareceu!!".format(pokemon))
+                escolha = input("Deseja tentar capturálo (s/n)? ")
+                if escolha == "n":
+                    print("Ok, passando...")
+                    return 0
+                if escolha == "s":
+                    desafio = (pokemon.level - 5) * random.random()
+                    capacidade = self.level * random.random()
+                    if capacidade > desafio:
+                        self.capturar(pokemon)
+                    else:
+                        print("{} fugiu!".format(pokemon))
+            elif encontro == 1:
+                if random.random() < 0.2:
+                    item = ItemMana('Eter')
+                    print("Encontrou um Éter!")
+                    self.itens.append(item) 
                 else:
-                    print("{} fugiu!".format(pokemon))
+                    item = ItemCura('Potion')
+                    print("Encontrou um potion de cura!")
+                    self.itens.append(item) 
+
         else:
-            print("Nenhum pokemon encontrado...")
+            print("Nada foi encontrado...")
+
+    def ver_itens(self):
+        print("#     Seus Itens!    #")
+        for indice, item in enumerate(self.itens):
+            print("{} - {} # {}".format(indice, item.nome, item))
+
+        opcao = input("Deseja usar algum algum item (q para sair)?")
+
+        if opcao != 'q':
+            #if self.itens[int(opcao)]:
+            try:
+                item = self.itens[int(opcao)]
+                self.mostrarPokemons()
+                poke_id = input("Escolha o pokemon que você que usar o item (q para cancelar): ")
+                pokemon = self.pokemons[int(poke_id)]
+                if poke_id == 'q':
+                    return 0;
+                while pokemon == None:
+                    poke_id = input("Escolha o pokemon que você que usar o item (q para cancelar): ")
+                    if poke_id == 'q':
+                        return 0
+                    pokemon = self.pokemons[int(poke_id)]
+                item_usado = item.usar(pokemon)
+                if item_usado:
+                    self.itens.pop(int(opcao))
+            except:
+                print("Item não existe!")
+
+    def item_batalha(self, pokemon):
+        print("#     Seus Itens!    #")
+        for indice, item in enumerate(self.itens):
+            print("{} - {} # {}".format(indice, item.nome, item))
+
+        opcao = input("Deseja usar algum algum item (q para sair)?")
+
+        if opcao != 'q':
+            try:
+                item = self.itens[int(opcao)]
+                item_usado = item.usar(pokemon)
+                if(item_usado):
+                    self.itens.pop(int(opcao))
+                return True
+            except:
+                print("Item não existe!")
+                return True
+        else:
+            return False
+    
 
 class Inimigo(Pessoa):
     tipo = 'Inimigo'

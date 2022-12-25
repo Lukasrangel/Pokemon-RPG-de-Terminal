@@ -3,6 +3,7 @@ mostrar hps nas lutas	--> (X)
 variar golpes inimigos  --> (X)
 dar opções nas lutas	--> (X)
 opçaõ sair do médico	--> (X)
+opcçao de save		--> (X)
 
 bug médico ao selecionar pokemon 0 --> (x)
 >> inimigos estão sem novas magias --> (X)
@@ -15,6 +16,14 @@ sistema de magias	--> (X) {
 	função aprender especiais	(x)	
 	usar magias			(X)
 }
+balancear capturas 	--> (X) {
+	criar level do player   (X)
+	}
+sistema de itens	--> (X)
 
-balancear capturas 	--> ( )
-sistema de itens	--> ( )
+encontrar itens 	--> (X)
+
+
+criar mais status	--> ()
+criar loja		--> (X)
+
